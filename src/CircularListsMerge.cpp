@@ -32,7 +32,95 @@ struct node{
 	int data;
 	struct node *next;
 };
+
+int length(struct node* head)
+{
+	int i = 0;
+	struct node *p;
+	p = head;
+	while (p!=head)
+	{
+		i++;
+		p=p->next;
+	}
+	return i;
+}
+
+void insert(node **head, int ele)
+{
+	node *p, *temp;
+	temp = (node*)malloc(sizeof(node*));
+	temp->data = ele;
+	temp->next = NULL;
+	if (head == NULL)
+		*head = temp;
+	else
+	{
+		p = *head;
+		p->next = temp;
+	}
+}
+
 int merge_circularlists(struct node **head1, struct node **head2){
 	//Returns Length of merged Sorted circular SLL and also points *head1 to final SLL .
-	return -1;
+	if ((*head1 == NULL) && (*head2 == NULL))
+		return -1;
+	if ((*head1 == NULL) && (*head2 != NULL))
+	{
+		return length(*head1);
+	}
+	else if ((*head1 != NULL) && (*head2 == NULL))
+	{
+		head2 = head1;
+		return length(*head1);
+	}
+	struct node *p, *q, *r;
+	int i, j = 0, k = 0, m, n;
+	m = length(*head1);
+	n = length(*head2);
+	p = *head1;
+	q = *head2;
+	r = *head1;
+	for (i = 0; i < m + n;)
+	{
+		if ((j < m) && (k < n))
+		{
+			if (p->data <= q->data)
+			{
+				insert(&r, p->data);
+				r=r->next;
+				p = p->next;
+				i++; j++;
+			}
+			else
+			{
+				insert(&r, q->data);
+				r = r->next;
+				q = q->next;
+				i++; k++;
+			}
+		}
+		else if (j == m)
+		{
+			for (; i < m + n;)
+			{
+				insert(&r, q->data);
+				r = r->next;
+				i++;
+				q = q->next;
+			}
+		}
+		else
+		{
+			for (; i < m + n;)
+			{
+				insert(&r, p->data);
+				r = r->next;
+				p = p->next;
+				i++;
+			}
+		}
+	}
+	r= *head1;
+	return i;
 }
